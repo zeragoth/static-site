@@ -10,7 +10,7 @@ class HTMLNode:
 
     def props_to_html(self):
         out = ''
-        if not self.props:
+        if self.props is None:
             return out
         for prop in self.props:
             out += f' {prop}="{self.props[prop]}"'
@@ -25,9 +25,9 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
 
     def to_html(self):
-        if not self.value:
+        if self.value is None:
             raise ValueError("value not found")
-        if not self.tag:
+        if self.tag is None:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
     
@@ -40,9 +40,9 @@ class ParentNode(HTMLNode):
         super().__init__(tag, None, children, props)
 
     def to_html(self):
-        if not self.tag:
+        if self.tag is None:
             raise ValueError("tag not found")
-        if not self.children:
+        if self.children is None:
             raise ValueError("node has no children")
         children_html = ""
         for child in self.children:
