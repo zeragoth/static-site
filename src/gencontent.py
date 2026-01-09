@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from markdown_blocks import markdown_to_html_node
 
 
@@ -32,3 +33,18 @@ def generate_page(from_path, template_path, dest_path):
         os.makedirs(dest_dir_path, exist_ok=True)
     to_file = open(dest_path, "w")
     to_file.write(template)
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if os.path.exists(dir_path_content):
+        for entry in os.listdir(dir_path_content):
+            entry_path = os.path.join(dir_path_content, entry)
+            dst_path = os.path.join(dest_dir_path, entry)
+            if os.path.isfile(entry_path):
+                # replaces the suffix (.md) with a new one (.html)
+                dst_path = Path(dst_path).with_suffix(".html")
+                generate_page(entry_path, template_path, dst_path)
+            else:
+                generate_pages_recursive(entry_path, template_path, dst_path)
+    else:
+        raise FileExistsError(f"{dir_path_content} does not exist")
